@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>경찰청 범죄발생지역별 통계</title>
+  <link rel="stylesheet" href="css/style1.css">
+  <!-- Chart.js 라이브러리 -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h1>경찰청 범죄발생지역별 통계 (2012년)</h1>
+
+  <div style="display: flex; justify-content: space-between;">
+
+    <!-- 왼쪽 영역: 지도 -->
+    <div id="map" style="width: 60%; height: 500px;"></div>
+
+    <!-- 오른쪽 영역: 범죄 대분류, 중분류 도넛 차트 -->
+    <div style="width: 30%;">
+
+      <!-- 범죄 대분류 도넛 차트 -->
+      <h3>범죄 대분류</h3>
+      <div id="crimeCategoryChartContainer">
+        <canvas id="crimeCategoryChart"></canvas>
+      </div>
+
+      <!-- 범죄 중분류 도넛 차트 -->
+      <h3>범죄 중분류</h3>
+      <div id="crimeSubCategoryChartContainer">
+        <canvas id="crimeSubCategoryChart"></canvas>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 아래 영역: 범죄 발생 수 Top 10 도시 막대 차트 -->
+  <div id="chartContainer" style="width: 80%; margin: 20px auto;">
+    <h3>범죄 발생 수 Top 10 도시</h3>
+    <canvas id="topCitiesChart"></canvas>
+  </div>
+
+  <!-- Kakao Maps SDK -->
+  <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=a92b2e8207a0207090f632e3200411e1"></script>
+  
+  <!-- Custom Script -->
+  <script src="js/script1.js"></script>
+  <!-- 페이지가 로드되면 2012년 데이터를 로드하도록 설정 -->
+  <script>
+    window.onload = function() {
+      loadData('2012');
+    };
+  </script>
+    <!-- Custom Script -->
+    <script>
+        window.onload = function() {
+          // 차트 데이터
+          const crimeCategoryData = {
+            labels: ['폭력범죄', '재산범죄', '기타범죄'],
+            datasets: [{
+              data: [60, 30, 10], // 예시 데이터
+              backgroundColor: ['#ff9999', '#66b3ff', '#99ff99'],
+            }]
+          };
+    
+          const crimeSubCategoryData = {
+            labels: ['폭력', '절도', '사기', '폭행', '기타'],
+            datasets: [{
+              data: [40, 20, 10, 15, 15], // 예시 데이터
+              backgroundColor: ['#ffcccc', '#ffcc66', '#ff66cc', '#66ccff', '#ccff66'],
+            }]
+          };
+    
+          const topCitiesData = {
+            labels: ['서울', '안산', '인천', '대전', '광주', '목포', '부산', '울산', '김해', '포항'],
+            datasets: [{
+              label: '범죄 발생 수',
+              data: [1024, 67, 157, 117, 176, 32, 366, 81, 43, 35],
+              backgroundColor: '#ff6666',
+            }]
+          };
+    
+          // 범죄 대분류 도넛 차트
+          const crimeCategoryChart = new Chart(document.getElementById('crimeCategoryChart').getContext('2d'), {
+            type: 'doughnut',
+            data: crimeCategoryData,
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: 'top',
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function(tooltipItem) {
+                      return tooltipItem.label + ': ' + tooltipItem.raw + '%';
+                    }
+                  }
+                }
+              }
+            }
+          });
+    
+          // 범죄 중분류 도넛 차트
+          const crimeSubCategoryChart = new Chart(document.getElementById('crimeSubCategoryChart').getContext('2d'), {
+            type: 'doughnut',
+            data: crimeSubCategoryData,
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: 'top',
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function(tooltipItem) {
+                      return tooltipItem.label + ': ' + tooltipItem.raw + '%';
+                    }
+                  }
+                }
+              }
+            }
+          });
+    
+          // 범죄 발생 수 Top 10 도시 막대 차트
+          const topCitiesChart = new Chart(document.getElementById('topCitiesChart').getContext('2d'), {
+            type: 'bar',
+            data: topCitiesData,
+            options: {
+              responsive: true,
+              scales: {
+                x: {
+                  beginAtZero: true,
+                },
+                y: {
+                  beginAtZero: true,
+                }
+              }
+            }
+          });
+        };
+      </script>
+</body>
+</html>
